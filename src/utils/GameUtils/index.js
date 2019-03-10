@@ -1,3 +1,5 @@
+import Tile from './Tile';
+
 class GameUtils {
   static getEmptyField({ x, y }) {
     return [...Array(y).fill([]).map(_ => [...Array(x)])];
@@ -8,12 +10,16 @@ class GameUtils {
   }
 
   static getFieldCopy(field) {
-    return [...Array(field.length).fill([])]
-      .map((_, x) => [...field[x]]);
+    return new Array(field.length).fill([])
+      .map((_, x) => GameUtils.getLineCopy(field[x]));
+  }
+
+  static getLineCopy(line) {
+    return line.map(tile => tile ? new Tile({ ...tile }) : tile);
   }
 
   static getNewTile() {
-    return { score: GameUtils.getScoreForNewTile() };
+    return new Tile({ score: GameUtils.getScoreForNewTile() });
   }
 
   static getScoreForNewTile() {
@@ -43,12 +49,66 @@ class GameUtils {
     const emptyTiles = [];
 
     field.forEach((line, y) => {
-      line.forEach((cell, x) => {
-        !cell && emptyTiles.push({ y, x });
+      line.forEach((tile, x) => {
+        !tile && emptyTiles.push({ y, x });
       });
     });
 
     return emptyTiles;
+  }
+
+  static mergeTilesTo(field, { dir }) {
+    switch (dir) {
+      case 'rtl':
+        return GameUtils.mergeAllLines(field);
+      default: return new Error('Wrong direction');
+    }
+  }
+
+  static mergeAllLines(field) {
+    return field.map(line => GameUtils.mergeTileLine(line));
+  }
+
+  static mergeTileLine(line) {
+    const lineCopy = GameUtils.getLineCopy(line);
+    let first = 0;
+
+    for (let second = 1; second < lineCopy.length; second++) {
+      if (lineCopy[first] && lineCopy[second]
+        && lineCopy[first].score === lineCopy[second].score
+      ) {
+        lineCopy[first] = new Tile({ score: lineCopy[first].score * 2 });
+        lineCopy[second] = undefined;
+        first++;
+      } else if (lineCopy[second]) {
+        if (lineCopy[first]) {
+          first++;
+        }
+        lineCopy[first] = lineCopy[second];
+        if (first !== second) {
+          lineCopy[second] = undefined;
+        }
+      }
+    }
+
+    return lineCopy;
+  }
+
+  static rotateFieldToRight(field) {
+    const xLen = field[0].length
+    const yLen = field.length;
+    const newField = GameUtils.getEmptyField({
+      x: yLen,
+      y: xLen
+    });
+
+    field.forEach((line, y) => {
+      line.forEach((tile, x) => {
+        newField[x][yLen - y - 1] = tile;
+      });
+    });
+
+    return newField;
   }
 }
 

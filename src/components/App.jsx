@@ -15,13 +15,13 @@ class App extends Component {
   }
 
   render() {
-    const { game } = this.props;
+    const { game: { field } } = this.props;
 
-    if (!game.field) return null;
+    if (!field) return null;
 
     return (
       <div className="game">
-        <GameField field={game.field} />
+        <GameField field={field} />
         <GameFieldBackground
           x={FIELD_SIZE_X}
           y={FIELD_SIZE_Y}
