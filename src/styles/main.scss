@@ -1,0 +1,58 @@
+@import 'variables.scss';
+@import 'utils.scss';
+
+body {
+  margin: 0;
+  background-color: #FAF8EF;
+  font-family: 'Open Sans', sans-serif;
+}
+
+.game {
+  position: relative;
+  display: inline-block;
+
+  .field {
+    display: inline-block;
+    background-color: #BBADA0;
+    padding: $space-between-cells;
+  }
+  .field-line {
+    height: $cell-size;
+  }
+  .field-line:not(:last-child) {
+    margin-bottom: $space-between-cells;
+  }
+  .empty-cell {
+    display: inline-block;
+    background-color: #CDC1B4;
+  }
+  .empty-cell:not(:last-child) {
+    margin-right: $space-between-cells;
+  }
+  .cell {
+    position: absolute;
+    color: #776E65;
+    font-size: 52px;
+    font-weight: bold;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  .empty-cell,
+  .cell {
+    width: $cell-size;
+    height: $cell-size;
+  }
+  .field,
+  .empty-cell,
+  .cell {
+    border-radius: 3px;
+  }
+  @for $x from 0 through 3 {
+    @for $y from 0 through 3 {
+      .cell-position-#{$x}-#{$y} {
+        transform: translate3d(getCellX($x), getCellY($y), 0);
+      }
+    }
+  }
+}
