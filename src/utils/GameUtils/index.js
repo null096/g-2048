@@ -12,6 +12,10 @@ class GameUtils {
       .map((_, x) => [...field[x]]);
   }
 
+  static getNewTile() {
+    return { score: GameUtils.getScoreForNewTile() };
+  }
+
   static getScoreForNewTile() {
     return Math.random() > 0.9090909 ? 4 : 2;
   }
@@ -29,7 +33,7 @@ class GameUtils {
       const randIndex = GameUtils.getRandomArrayIndex(emptyTiles.length);
       const { x, y } = emptyTiles[randIndex];
       emptyTiles.splice(randIndex, 1);
-      fieldCopy[y][x] = GameUtils.getScoreForNewTile();
+      fieldCopy[y][x] = GameUtils.getNewTile();
     }
 
     return fieldCopy;
@@ -39,8 +43,8 @@ class GameUtils {
     const emptyTiles = [];
 
     field.forEach((line, y) => {
-      line.forEach((score, x) => {
-        !score && emptyTiles.push({ y, x });
+      line.forEach((cell, x) => {
+        !cell && emptyTiles.push({ y, x });
       });
     });
 

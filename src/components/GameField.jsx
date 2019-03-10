@@ -10,12 +10,12 @@ class GameField extends Component {
       <div className="cells-container">
         {field.map((line, y) =>
           line.map((cell, x) =>
-            cell
+            !!(cell && cell.score)
               ?
               <div
-                className={`cell cell-position-${x}-${y}`}
+                className={`cell cell-${cell.score} cell-position-${x}-${y}`}
                 key={`cell-${x}-${y}`}
-              >{cell}</div>
+              >{cell.score}</div>
               : null
           )
         )}
