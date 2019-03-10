@@ -37,6 +37,7 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
+    user-select: none;
   }
   .empty-cell,
   .cell {
@@ -55,4 +56,41 @@ body {
       }
     }
   }
+  .cell-2 {
+    background-color:#EEE4DA;
+  }
+  .cell-4 {
+    background-color: #EDE0C8;
+  }
+  .cell-8 {
+    background-color: #F2B179;
+  }
+  .cell-16 {
+    background-color: #F59563;
+  }
+  .cell-32 {
+    background-color: #F67C5F;
+  }
+  .cell-64 {
+    background-color: #F65E3B;
+  }
+  .cell-128 {
+    background-color: #EDCF72;
+  }
+  .cell-256 {
+    background-color: #EDCC61;
+  }
+  .cell-512 {
+    background-color: #EDC850;
+  }
+  .cell-1024 {
+    background-color: #EDC53F;
+  }
+  .cell-2048 {
+    background-color: #EDC22E;
+  }
+  .cell-4096 {
+    background-color: #3E3933;
+  }
+
 }
