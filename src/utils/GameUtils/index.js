@@ -26,6 +26,13 @@ class GameUtils {
     return Math.random() > 0.9090909 ? 4 : 2;
   }
 
+  static getFieldLength(field) {
+    return {
+      xLen: field[0].length,
+      yLen: field.length
+    };
+  }
+
   static addTile({ field, amount = 1 }) {
     if (amount < 1) return field;
 
@@ -95,8 +102,7 @@ class GameUtils {
   }
 
   static rotateFieldToRight(field) {
-    const xLen = field[0].length
-    const yLen = field.length;
+    const { yLen, xLen } = GameUtils.getFieldLength(field);
     const newField = GameUtils.getEmptyField({
       x: yLen,
       y: xLen
