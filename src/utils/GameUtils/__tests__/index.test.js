@@ -4,12 +4,19 @@ import Tile from '../Tile';
 describe('Game Utils', () => {
   const createLine = (scores) =>
     scores.map(score => score ? new Tile({ score }) : score);
-  const { mergeTileLine } = GameUtils;
+  const {
+    mergeTileLine,
+    rotateFieldToRight
+  } = GameUtils;
   const isLineMergeWorksCorrectly = (e, r) => {
     const exp = createLine(e);
     const to = createLine(r);
     expect(mergeTileLine(exp)).toEqual(to);
-  }
+  };
+  const isRotateWorksCorrectly = (e, to) => {
+    const exp = rotateFieldToRight(e);
+    expect(exp).toEqual(to);
+  };
 
   it('Line merge works correctly', () => {
     const l = isLineMergeWorksCorrectly;
@@ -63,5 +70,40 @@ describe('Game Utils', () => {
       [4, 2, undefined, undefined]);
 
     l([], []);
+  });
+
+  describe('Rotate field to the right works correctly', () => {
+    const c = createLine;
+    const r = isRotateWorksCorrectly;
+
+    it('with 4x4 matrix', () => {
+      r(
+        [
+          c([undefined, undefined, 8, undefined]),
+          c([undefined, 2, undefined, 2]),
+          c([16, undefined, 8, undefined]),
+          c([undefined, undefined, undefined, 2])
+        ],
+        [
+          c([undefined, 16, undefined, undefined]),
+          c([undefined, undefined, 2, undefined]),
+          c([undefined, 8, undefined, 8]),
+          c([2, undefined, 2, undefined])
+        ]);
+    });
+    it('with 3x4 matrix', () => {
+      r(
+        [
+          c([2, 4, 8, 16]),
+          c([undefined, 2, 64, undefined]),
+          c([undefined, undefined, undefined, 4]),
+        ],
+        [
+          c([undefined, undefined, 2]),
+          c([undefined, 2, 4]),
+          c([undefined, 64, 8]),
+          c([4, undefined, 16]),
+        ]);
+    });
   });
 });
