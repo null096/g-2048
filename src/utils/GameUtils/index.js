@@ -15,7 +15,11 @@ class GameUtils {
   }
 
   static getLineCopy(line) {
-    return line.map(tile => tile ? new Tile({ ...tile }) : tile);
+    return line.map(GameUtils.getTileCopy);
+  }
+
+  static getTileCopy(tile) {
+    return tile ? new Tile({ ...tile }) : tile;
   }
 
   static getNewTile() {
@@ -110,7 +114,7 @@ class GameUtils {
 
     field.forEach((line, y) => {
       line.forEach((tile, x) => {
-        newField[x][yLen - y - 1] = tile;
+        newField[x][yLen - y - 1] = GameUtils.getTileCopy(tile);
       });
     });
 
