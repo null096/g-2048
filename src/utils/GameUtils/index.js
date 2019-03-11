@@ -120,6 +120,11 @@ class GameUtils {
 
     return newField;
   }
+
+  static reverseFieldLines(field) {
+    const newField = GameUtils.getFieldCopy(field);
+    return newField.map(line => line.reverse());
+  }
 }
 
 export default GameUtils;

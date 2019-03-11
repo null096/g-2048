@@ -6,7 +6,8 @@ describe('Game Utils', () => {
     scores.map(score => score ? new Tile({ score }) : score);
   const {
     mergeTileLine,
-    rotateFieldToRight
+    rotateFieldToRight,
+    reverseFieldLines
   } = GameUtils;
   const isLineMergeWorksCorrectly = (e, r) => {
     const exp = createLine(e);
@@ -17,6 +18,10 @@ describe('Game Utils', () => {
     const exp = rotateFieldToRight(e);
     expect(exp).toEqual(to);
   };
+  const isReverseFieldWorksCorrectly = (e, to) => {
+    const exp = reverseFieldLines(e);
+    expect(exp).toEqual(to);
+  }
 
   it('Line merge works correctly', () => {
     const l = isLineMergeWorksCorrectly;
@@ -79,30 +84,64 @@ describe('Game Utils', () => {
     it('with 4x4 matrix', () => {
       r(
         [
-          c([undefined, undefined, 8, undefined]),
-          c([undefined, 2, undefined, 2]),
-          c([16, undefined, 8, undefined]),
-          c([undefined, undefined, undefined, 2])
+          c([undefined, undefined,    8,          undefined]),
+          c([undefined, 2,            undefined,  2]),
+          c([16,        undefined,    8,          undefined]),
+          c([undefined, undefined,    undefined,  2])
         ],
         [
-          c([undefined, 16, undefined, undefined]),
-          c([undefined, undefined, 2, undefined]),
-          c([undefined, 8, undefined, 8]),
-          c([2, undefined, 2, undefined])
+          c([undefined, 16,         undefined,    undefined]),
+          c([undefined, undefined,  2,            undefined]),
+          c([undefined, 8,          undefined,    8]),
+          c([2,         undefined,  2,            undefined])
         ]);
     });
     it('with 3x4 matrix', () => {
       r(
         [
-          c([2, 4, 8, 16]),
-          c([undefined, 2, 64, undefined]),
-          c([undefined, undefined, undefined, 4]),
+          c([2,         4,          8,          16]),
+          c([undefined, 2,          64,         undefined]),
+          c([undefined, undefined,  undefined,  4]),
         ],
         [
-          c([undefined, undefined, 2]),
-          c([undefined, 2, 4]),
-          c([undefined, 64, 8]),
-          c([4, undefined, 16]),
+          c([undefined, undefined,  2]),
+          c([undefined, 2,          4]),
+          c([undefined, 64,         8]),
+          c([4,         undefined,  16]),
+        ]);
+    });
+  });
+
+  describe('Reverse field works correctly', () => {
+    const r = isReverseFieldWorksCorrectly;
+    const c = createLine;
+
+    it('with 4x4 matrix', () => {
+      r(
+        [
+          c([undefined, undefined,    8,          undefined]),
+          c([undefined, 2,            undefined,  2]),
+          c([16,        undefined,    8,          undefined]),
+          c([undefined, undefined,    undefined,  2])
+        ],
+        [
+          c([undefined, 8,          undefined,  undefined]),
+          c([2,         undefined,  2,          undefined]),
+          c([undefined, 8,          undefined,  16]),
+          c([2,         undefined,  undefined,  undefined])
+        ]);
+    });
+    it('with 3x4 matrix', () => {
+      r(
+        [
+          c([2,         4,          8,          16]),
+          c([undefined, 2,          64,         undefined]),
+          c([undefined, undefined,  undefined,  4]),
+        ],
+        [
+          c([16,        8,          4,          2]),
+          c([undefined, 64,         2,          undefined]),
+          c([4,         undefined,  undefined,  undefined]),
         ]);
     });
   });
