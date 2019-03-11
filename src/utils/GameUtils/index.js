@@ -121,6 +121,22 @@ class GameUtils {
     return newField;
   }
 
+  static rotateFieldToLeft(field) {
+    const { yLen, xLen } = GameUtils.getFieldLength(field);
+    const newField = GameUtils.getEmptyField({
+      x: yLen,
+      y: xLen
+    });
+
+    field.forEach((line, y) => {
+      line.forEach((tile, x) => {
+        newField[yLen - x][y] = GameUtils.getTileCopy(tile);
+      });
+    });
+
+    return newField;
+  }
+
   static reverseFieldLines(field) {
     const newField = GameUtils.getFieldCopy(field);
     return newField.map(line => line.reverse());

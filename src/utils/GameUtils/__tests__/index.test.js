@@ -7,7 +7,8 @@ describe('Game Utils', () => {
   const {
     mergeTileLine,
     rotateFieldToRight,
-    reverseFieldLines
+    reverseFieldLines,
+    rotateFieldToLeft
   } = GameUtils;
   const isLineMergeWorksCorrectly = (e, r) => {
     const exp = createLine(e);
@@ -21,60 +22,66 @@ describe('Game Utils', () => {
   const isReverseFieldWorksCorrectly = (e, to) => {
     const exp = reverseFieldLines(e);
     expect(exp).toEqual(to);
+  };
+  const isRotateToTheRightWorksCorrectly = (e, to) => {
+    const exp = rotateFieldToLeft(e);
+    expect(exp).toEqual(to);
   }
 
-  it('Line merge works correctly', () => {
-    const l = isLineMergeWorksCorrectly;
-
-    l([2, 2, undefined, undefined],
-      [4, undefined, undefined, undefined]);
-
-    l([4, 2, undefined, undefined],
-      [4, 2, undefined, undefined]);
-
-    l([undefined, 2, undefined, 2],
-      [4, undefined, undefined, undefined]);
-
-    l([undefined, 4, undefined, 2],
-      [4, 2, undefined, undefined]);
-
-    l([8, 8, 8, 8],
-      [16, 16, undefined, undefined]);
-
-    l([undefined, undefined, undefined],
-      [undefined, undefined, undefined]);
-
-    l([8, undefined, 4, 4],
-      [8, 8, undefined, undefined]);
-
-    l([2, 2, undefined, 2],
-      [4, 2, undefined, undefined]);
-
-    l([undefined, undefined, 2, 4],
-      [2, 4, undefined, undefined]);
-
-    l([8, undefined, undefined, 8],
-      [16, undefined, undefined, undefined]);
-
-    l([undefined, 8, 4, 2],
-      [8, 4, 2, undefined]);
-
-    l([undefined, undefined, undefined, undefined],
-      [undefined, undefined, undefined, undefined]);
-
-    l([undefined, undefined, undefined, 8],
-      [8, undefined, undefined, undefined]);
-
-    l([undefined, 2, undefined, undefined],
-      [2, undefined, undefined, undefined]);
-
-    l([64, 128, undefined, 128],
-      [64, 256, undefined, undefined]);
-
-    l([undefined, 2, 2, 2],
-      [4, 2, undefined, undefined]);
-
-    l([], []);
+  describe('Line merge', () => {
+    it('Line merge works correctly', () => {
+      const l = isLineMergeWorksCorrectly;
+  
+      l([2, 2, undefined, undefined],
+        [4, undefined, undefined, undefined]);
+  
+      l([4, 2, undefined, undefined],
+        [4, 2, undefined, undefined]);
+  
+      l([undefined, 2, undefined, 2],
+        [4, undefined, undefined, undefined]);
+  
+      l([undefined, 4, undefined, 2],
+        [4, 2, undefined, undefined]);
+  
+      l([8, 8, 8, 8],
+        [16, 16, undefined, undefined]);
+  
+      l([undefined, undefined, undefined],
+        [undefined, undefined, undefined]);
+  
+      l([8, undefined, 4, 4],
+        [8, 8, undefined, undefined]);
+  
+      l([2, 2, undefined, 2],
+        [4, 2, undefined, undefined]);
+  
+      l([undefined, undefined, 2, 4],
+        [2, 4, undefined, undefined]);
+  
+      l([8, undefined, undefined, 8],
+        [16, undefined, undefined, undefined]);
+  
+      l([undefined, 8, 4, 2],
+        [8, 4, 2, undefined]);
+  
+      l([undefined, undefined, undefined, undefined],
+        [undefined, undefined, undefined, undefined]);
+  
+      l([undefined, undefined, undefined, 8],
+        [8, undefined, undefined, undefined]);
+  
+      l([undefined, 2, undefined, undefined],
+        [2, undefined, undefined, undefined]);
+  
+      l([64, 128, undefined, 128],
+        [64, 256, undefined, undefined]);
+  
+      l([undefined, 2, 2, 2],
+        [4, 2, undefined, undefined]);
+  
+      l([], []);
+    });
   });
 
   describe('Rotate field to the right works correctly', () => {
@@ -142,6 +149,26 @@ describe('Game Utils', () => {
           c([16,        8,          4,          2]),
           c([undefined, 64,         2,          undefined]),
           c([4,         undefined,  undefined,  undefined]),
+        ]);
+    });
+  });
+
+  describe('Rotate field to the left works correctly', () => {
+    const l = isRotateToTheRightWorksCorrectly;
+    const c = createLine;
+
+    it('with 3x4 matrix', () => {
+      l(
+        [
+          c([undefined, undefined,    8,          undefined]),
+          c([undefined, 2,            undefined,  32]),
+          c([16,        undefined,    4,          undefined])
+        ],
+        [
+          c([undefined, 32,         undefined]),
+          c([8,         undefined,  4]),
+          c([undefined, 2,          undefined]),
+          c([undefined, undefined,  16])
         ]);
     });
   });
