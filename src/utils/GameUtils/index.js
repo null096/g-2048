@@ -1,4 +1,5 @@
 import Tile from './Tile';
+import { dirTypes } from './constants';
 
 class GameUtils {
   static getEmptyField({ x, y }) {
@@ -69,9 +70,33 @@ class GameUtils {
   }
 
   static mergeTilesTo(field, { dir }) {
+    const {
+      mergeAllLines,
+      reverseFieldLines,
+      rotateFieldToRight,
+      rotateFieldToLeft
+    } = GameUtils;
+    let rotated, merged;
+
     switch (dir) {
-      case 'rtl':
-        return GameUtils.mergeAllLines(field);
+      case dirTypes.toLeft:
+        return mergeAllLines(field);
+
+      case dirTypes.toRight:
+        rotated = reverseFieldLines(field);
+        merged = mergeAllLines(rotated);
+        return reverseFieldLines(merged);
+
+      case dirTypes.toUp:
+        rotated = rotateFieldToLeft(field);
+        merged = mergeAllLines(rotated);
+        return rotateFieldToRight(merged);
+
+      case dirTypes.toDown:
+        rotated = rotateFieldToRight(field);
+        merged = mergeAllLines(rotated);
+        return rotateFieldToLeft(merged);
+
       default: return new Error('Wrong direction');
     }
   }
@@ -105,37 +130,36 @@ class GameUtils {
     return lineCopy;
   }
 
-  static rotateFieldToRight(field) {
+  static rotateRL = ({ to }) => (field) => {
     const { yLen, xLen } = GameUtils.getFieldLength(field);
     const newField = GameUtils.getEmptyField({
       x: yLen,
       y: xLen
     });
 
-    field.forEach((line, y) => {
-      line.forEach((tile, x) => {
-        newField[x][yLen - y - 1] = GameUtils.getTileCopy(tile);
-      });
-    });
-
+    switch (to) {
+      case dirTypes.right:
+        field.forEach((line, y) => {
+          line.forEach((tile, x) => {
+            newField[x][yLen - y - 1] = GameUtils.getTileCopy(tile);
+          });
+        });
+        break;
+      case dirTypes.left:
+        field.forEach((line, y) => {
+          line.forEach((tile, x) => {
+            newField[xLen - x - 1][y] = GameUtils.getTileCopy(tile);
+          });
+        });
+        break;
+      default: return new Error('Wrong direction');
+    }
     return newField;
   }
 
-  static rotateFieldToLeft(field) {
-    const { yLen, xLen } = GameUtils.getFieldLength(field);
-    const newField = GameUtils.getEmptyField({
-      x: yLen,
-      y: xLen
-    });
+  static rotateFieldToRight = GameUtils.rotateRL({ to: dirTypes.right });
 
-    field.forEach((line, y) => {
-      line.forEach((tile, x) => {
-        newField[yLen - x][y] = GameUtils.getTileCopy(tile);
-      });
-    });
-
-    return newField;
-  }
+  static rotateFieldToLeft = GameUtils.rotateRL({ to: dirTypes.left });
 
   static reverseFieldLines(field) {
     const newField = GameUtils.getFieldCopy(field);
