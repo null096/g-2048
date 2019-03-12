@@ -38,6 +38,11 @@ body {
     justify-content: center;
     align-items: center;
     user-select: none;
+    transition: .35s;
+    z-index: 1;
+  }
+  .cell-removed {
+    z-index: 0;
   }
   .empty-cell,
   .cell {

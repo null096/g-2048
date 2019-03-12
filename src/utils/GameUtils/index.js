@@ -1,4 +1,5 @@
 import Tile from './Tile';
+import arraySort from 'array-sort';
 import { dirTypes } from './constants';
 
 class GameUtils {
@@ -71,63 +72,182 @@ class GameUtils {
 
   static mergeTilesTo(field, { dir }) {
     const {
-      mergeAllLines,
       reverseFieldLines,
       rotateFieldToRight,
-      rotateFieldToLeft
+      rotateFieldToLeft,
+      applyMerge
     } = GameUtils;
-    let rotated, merged;
 
     switch (dir) {
       case dirTypes.toLeft:
-        return mergeAllLines(field);
+        return applyMerge({ field });
 
       case dirTypes.toRight:
-        rotated = reverseFieldLines(field);
-        merged = mergeAllLines(rotated);
-        return reverseFieldLines(merged);
+        return applyMerge({
+          field,
+          rotateFn: reverseFieldLines,
+          rotateBackFn: reverseFieldLines
+        });
 
       case dirTypes.toUp:
-        rotated = rotateFieldToLeft(field);
-        merged = mergeAllLines(rotated);
-        return rotateFieldToRight(merged);
+        return applyMerge({
+          field,
+          rotateFn: rotateFieldToLeft,
+          rotateBackFn: rotateFieldToRight
+        });
 
       case dirTypes.toDown:
-        rotated = rotateFieldToRight(field);
-        merged = mergeAllLines(rotated);
-        return rotateFieldToLeft(merged);
+        return applyMerge({
+          field,
+          rotateFn: rotateFieldToRight,
+          rotateBackFn: rotateFieldToLeft
+        });
 
       default: return new Error('Wrong direction');
     }
   }
 
-  static mergeAllLines(field) {
-    return field.map(line => GameUtils.mergeTileLine(line));
+  static applyMerge({
+    field,
+    rotateFn = x => x,
+    rotateBackFn = x => x,
+  }) {
+    const {
+      mergeAllLines,
+    } = GameUtils;
+    let rotated, removed, res;
+
+    rotated = rotateFn(field);
+    res = mergeAllLines(rotated);
+    rotated = rotateBackFn(res.field);
+    removed = rotateBackFn(res.removed);
+    return { field: rotated, removed };
   }
 
-  static mergeTileLine(line) {
-    const lineCopy = GameUtils.getLineCopy(line);
+  static getFlattenTilesWithPositions({ field, removed }) {
+    const {
+      addPositionForFieldTiles,
+      addPositionForRemovedTiles,
+    } = GameUtils;
+    const newField = addPositionForFieldTiles(field);
+    const newRemoved = addPositionForRemovedTiles(field, removed);
+    const flatten = [
+      ...newField,
+      ...(newRemoved || [])
+    ].flat(1);
+
+    return arraySort(flatten.filter(Boolean), 'id');
+  }
+
+  static addPositionForRemovedTiles(field, removed) {
+    if (!removed) return;
+    const {
+      getFieldCopy,
+      getTilesPosition
+    } = GameUtils;
+    const removedCopy = getFieldCopy(removed);
+    const tilesPos = getTilesPosition(field);
+
+    return removedCopy.map((line) =>
+      line.map((tile) => {
+        if (!tile) return tile;
+        const pos = tilesPos[tile.mergeTileId];
+
+        return new Tile({
+          ...tile,
+          x: pos.x,
+          y: pos.y
+        });
+      })
+    );
+  }
+
+  static addPositionForFieldTiles(field) {
+    const {
+      getFieldCopy,
+    } = GameUtils;
+    const fieldCopy = getFieldCopy(field);
+
+    return fieldCopy.map((line, y) =>
+      line.map((tile, x) =>
+        tile ? new Tile({ ...tile, y, x }) : tile)
+    );
+  }
+
+  static getTilesPosition(field) {
+    const res = {};
+
+    field.forEach((line, y) => {
+      line.forEach((tile, x) => {
+        if (tile) res[tile.id] = { x, y };
+      });
+    });
+
+    return res;
+  }
+
+  static mergeAllLines = (field) => {
+    const {
+      getFieldCopy,
+      getFieldLength,
+      getEmptyField,
+      mergeTileLine
+    } = GameUtils;
+    const fieldCopy = getFieldCopy(field);
+    const { xLen, yLen } = getFieldLength(fieldCopy);
+    const removed = getEmptyField({ x: xLen, y: yLen });
+    const gameData = { removed };
+
+    fieldCopy.map((line, lineY) => mergeTileLine({
+      line,
+      lineY,
+      gameData
+    }));
+
+    return {
+      field: fieldCopy,
+      removed
+    };
+  }
+
+  static mergeTileLine({
+    line,
+    lineY,
+    gameData
+  }) {
+    const { removed } = gameData;
     let first = 0;
 
-    for (let second = 1; second < lineCopy.length; second++) {
-      if (lineCopy[first] && lineCopy[second]
-        && lineCopy[first].score === lineCopy[second].score
+    for (let second = 1; second < line.length; second++) {
+      if (line[first] && line[second]
+        && line[first].score === line[second].score
       ) {
-        lineCopy[first] = new Tile({ score: lineCopy[first].score * 2 });
-        lineCopy[second] = undefined;
+        const newTile = new Tile({ score: line[first].score * 2 });
+
+        removed[lineY][first] = new Tile({
+          ...line[first],
+          mergeTileId: newTile.id
+        });
+        removed[lineY][second] = new Tile({
+          ...line[second],
+          mergeTileId: newTile.id
+        });
+
+        line[first] = newTile;
+        line[second] = undefined;
         first++;
-      } else if (lineCopy[second]) {
-        if (lineCopy[first]) {
+      } else if (line[second]) {
+        if (line[first]) {
           first++;
         }
-        lineCopy[first] = lineCopy[second];
+        line[first] = line[second];
         if (first !== second) {
-          lineCopy[second] = undefined;
+          line[second] = undefined;
         }
       }
     }
 
-    return lineCopy;
+    return line;
   }
 
   static rotateRL = ({ to }) => (field) => {
@@ -161,7 +281,7 @@ class GameUtils {
 
   static rotateFieldToLeft = GameUtils.rotateRL({ to: dirTypes.left });
 
-  static reverseFieldLines(field) {
+  static reverseFieldLines = (field) => {
     const newField = GameUtils.getFieldCopy(field);
     return newField.map(line => line.reverse());
   }

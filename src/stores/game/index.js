@@ -4,6 +4,7 @@ import { dirTypes } from '../../utils/GameUtils/constants';
 
 class game {
   @observable field = null;
+  @observable removed = null;
 
   @action createField = ({ x = 4, y = 4 } = {}) => {
     const { getEmptyField, addTile } = GameUtils;
@@ -14,8 +15,9 @@ class game {
 
   mergeTiles = ({ dir }) => () => {
     const { mergeTilesTo } = GameUtils;
-    const merged = mergeTilesTo(this.field, { dir });
-    this.field = merged;
+    const res = mergeTilesTo(this.field, { dir });
+    this.field = res.field;
+    this.removed = res.removed;
   }
 
   @action mergeToLeft = this.mergeTiles({ dir: dirTypes.toLeft });
