@@ -1,7 +1,7 @@
 import React from 'react';
 import classes from 'classnames';
 import { observer } from 'mobx-react';
-import TilePose from './TilePose';
+import TilePose, { poses } from './TilePose';
 
 const Tile = ({ tile }) => {
   const tileClass = classes(
@@ -13,11 +13,11 @@ const Tile = ({ tile }) => {
   return (
     <TilePose
       className={tileClass}
-      pose="position"
+      pose={tile.isNew ? poses.onNew : poses.position}
       x={tile.x}
       y={tile.y}
       poseKey={`${tile.x}-${tile.y}`}
-      onPoseComplete={() => console.log(`complete tile-${tile.id}`)}
+      // onPoseComplete={() => console.log(`complete tile-${tile.id}`)}
     >{tile.score}</TilePose>
   );
 };

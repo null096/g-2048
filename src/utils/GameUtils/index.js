@@ -24,8 +24,13 @@ class GameUtils {
     return tile ? new Tile({ ...tile }) : tile;
   }
 
-  static getNewTile() {
-    return new Tile({ score: GameUtils.getScoreForNewTile() });
+  static getNewTile({
+    score = GameUtils.getScoreForNewTile(),
+  } = {}) {
+    return new Tile({
+      score,
+      isNew: true
+    });
   }
 
   static getScoreForNewTile() {
@@ -47,7 +52,7 @@ class GameUtils {
       throw new Error('Field is full');
     }
 
-    const fieldCopy = GameUtils.getFieldCopy(field);
+    const fieldCopy = GameUtils.resetPropsOnField(field, ['isNew']);
     while (amount--) {
       const randIndex = GameUtils.getRandomArrayIndex(emptyTiles.length);
       const { x, y } = emptyTiles[randIndex];
@@ -186,14 +191,31 @@ class GameUtils {
     return res;
   }
 
-  static mergeAllLines = (field) => {
+  static resetPropsOnField(field, props) {
     const {
       getFieldCopy,
-      getFieldLength,
-      getEmptyField,
-      mergeTileLine
     } = GameUtils;
     const fieldCopy = getFieldCopy(field);
+
+    return fieldCopy.map((line) =>
+      line.map(tile => {
+        if (!tile) return tile;
+        props.forEach((key) => {
+          tile[key] = undefined;
+        });
+        return tile;
+      })
+    );
+  }
+
+  static mergeAllLines = (field) => {
+    const {
+      getFieldLength,
+      getEmptyField,
+      mergeTileLine,
+      resetPropsOnField
+    } = GameUtils;
+    const fieldCopy = resetPropsOnField(field, ['isNew']);
     const { xLen, yLen } = getFieldLength(fieldCopy);
     const removed = getEmptyField({ x: xLen, y: yLen });
     const gameData = { removed };
@@ -215,6 +237,7 @@ class GameUtils {
     lineY,
     gameData
   }) {
+    const { getNewTile } = GameUtils;
     const { removed } = gameData;
     let first = 0;
 
@@ -222,7 +245,7 @@ class GameUtils {
       if (line[first] && line[second]
         && line[first].score === line[second].score
       ) {
-        const newTile = new Tile({ score: line[first].score * 2 });
+        const newTile = getNewTile({ score: line[first].score * 2 });
 
         removed[lineY][first] = new Tile({
           ...line[first],
