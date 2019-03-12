@@ -1,2 +1,6 @@
-$cell-size: 100px;
-$space-between-cells: 12px;
+$tile-size: 100px;
+$space-between-tiles: 12px;
+:export {
+  tileSize: $tile-size;
+  spaceBetweenTiles: $space-between-tiles;
+}

@@ -1,9 +1,0 @@
-@import 'variables.scss';
-
-@function getCellX($x) {
-  @return ($x + 1) * $space-between-cells + $x * $cell-size;
-}
-
-@function getCellY($y) {
-  @return ($y + 1) * $space-between-cells + $y * $cell-size;
-}

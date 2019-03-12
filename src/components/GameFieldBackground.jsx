@@ -9,7 +9,7 @@ const GameFieldBackground = ({ x, y }) => {
       {fakeGameField.map((line, i) =>
         <div className="field-line" key={`field-line-${i}`}>
           {line.map((_, j) =>
-            <div className="empty-cell" key={`empty-cell-${j}`}></div>
+            <div className="empty-tile" key={`empty-tile-${j}`}></div>
           )}
         </div>
       )}

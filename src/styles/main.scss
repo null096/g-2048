@@ -1,5 +1,4 @@
 @import 'variables.scss';
-@import 'utils.scss';
 
 body {
   margin: 0;
@@ -14,22 +13,22 @@ body {
   .field {
     display: inline-block;
     background-color: #BBADA0;
-    padding: $space-between-cells;
+    padding: $space-between-tiles;
   }
   .field-line {
-    height: $cell-size;
+    height: $tile-size;
   }
   .field-line:not(:last-child) {
-    margin-bottom: $space-between-cells;
+    margin-bottom: $space-between-tiles;
   }
-  .empty-cell {
+  .empty-tile {
     display: inline-block;
     background-color: #CDC1B4;
   }
-  .empty-cell:not(:last-child) {
-    margin-right: $space-between-cells;
+  .empty-tile:not(:last-child) {
+    margin-right: $space-between-tiles;
   }
-  .cell {
+  .tile {
     position: absolute;
     color: #776E65;
     font-size: 52px;
@@ -38,64 +37,55 @@ body {
     justify-content: center;
     align-items: center;
     user-select: none;
-    transition: .35s;
     z-index: 1;
   }
-  .cell-removed {
+  .tile-removed {
     z-index: 0;
   }
-  .empty-cell,
-  .cell {
-    width: $cell-size;
-    height: $cell-size;
+  .empty-tile,
+  .tile {
+    width: $tile-size;
+    height: $tile-size;
   }
   .field,
-  .empty-cell,
-  .cell {
+  .empty-tile,
+  .tile {
     border-radius: 3px;
   }
-  @for $x from 0 through 3 {
-    @for $y from 0 through 3 {
-      .cell-position-#{$x}-#{$y} {
-        transform: translate3d(getCellX($x), getCellY($y), 0);
-      }
-    }
-  }
-  .cell-2 {
+  .tile-2 {
     background-color:#EEE4DA;
   }
-  .cell-4 {
+  .tile-4 {
     background-color: #EDE0C8;
   }
-  .cell-8 {
+  .tile-8 {
     background-color: #F2B179;
   }
-  .cell-16 {
+  .tile-16 {
     background-color: #F59563;
   }
-  .cell-32 {
+  .tile-32 {
     background-color: #F67C5F;
   }
-  .cell-64 {
+  .tile-64 {
     background-color: #F65E3B;
   }
-  .cell-128 {
+  .tile-128 {
     background-color: #EDCF72;
   }
-  .cell-256 {
+  .tile-256 {
     background-color: #EDCC61;
   }
-  .cell-512 {
+  .tile-512 {
     background-color: #EDC850;
   }
-  .cell-1024 {
+  .tile-1024 {
     background-color: #EDC53F;
   }
-  .cell-2048 {
+  .tile-2048 {
     background-color: #EDC22E;
   }
-  .cell-4096 {
+  .tile-4096 {
     background-color: #3E3933;
   }
-
 }
