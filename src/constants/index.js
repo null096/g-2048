@@ -1,5 +1,5 @@
-export const FIELD_SIZE_X = 10;
-export const FIELD_SIZE_Y = 10;
+export const FIELD_SIZE_X = 4;
+export const FIELD_SIZE_Y = 4;
 export const DIR_TYPES = {
   right: 'right',
   left: 'left',
