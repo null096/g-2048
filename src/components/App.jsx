@@ -55,11 +55,11 @@ class App extends Component {
 
   render() {
     const {
-      game: {
-        field,
-        removed
-      }
-    } = this.props;
+      field,
+      removed,
+      isFieldFull,
+      isWin
+    } = this.props.game;
 
     if (!field) return null;
 
@@ -73,6 +73,8 @@ class App extends Component {
           x={FIELD_SIZE_X}
           y={FIELD_SIZE_Y}
         />
+        {isFieldFull && <span>Game over!</span>}
+        {isWin && <span>Win</span>}
       </div>
     );
   }

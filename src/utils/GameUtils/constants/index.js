@@ -6,3 +6,4 @@ export const dirTypes = {
   toDown: 'toDown',
   toUp: 'toUp'
 };
+export const winScore = 2048;

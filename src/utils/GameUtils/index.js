@@ -1,6 +1,6 @@
 import Tile from './Tile';
 import arraySort from 'array-sort';
-import { dirTypes } from './constants';
+import { dirTypes, winScore } from './constants';
 
 class GameUtils {
   static getEmptyField({ x, y }) {
@@ -45,22 +45,28 @@ class GameUtils {
   }
 
   static addTile({ field, amount = 1 }) {
+    const {
+      getRandomArrayIndex,
+      getNewTile,
+      getFieldCopy,
+      getEmptyTiles
+    } = GameUtils;
     if (amount < 1) return field;
 
-    const emptyTiles = GameUtils.getEmptyTiles(field);
+    const emptyTiles = getEmptyTiles(field);
     if (amount > emptyTiles.length) {
-      throw new Error('Field is full');
+      return { isFieldFull: true, field };
     }
 
-    const fieldCopy = GameUtils.resetPropsOnField(field, ['isNew']);
+    const fieldCopy = getFieldCopy(field);
     while (amount--) {
-      const randIndex = GameUtils.getRandomArrayIndex(emptyTiles.length);
+      const randIndex = getRandomArrayIndex(emptyTiles.length);
       const { x, y } = emptyTiles[randIndex];
       emptyTiles.splice(randIndex, 1);
-      fieldCopy[y][x] = GameUtils.getNewTile();
+      fieldCopy[y][x] = getNewTile();
     }
 
-    return fieldCopy;
+    return { field: fieldCopy };
   }
 
   static getEmptyTiles(field) {
@@ -307,6 +313,37 @@ class GameUtils {
   static reverseFieldLines = (field) => {
     const newField = GameUtils.getFieldCopy(field);
     return newField.map(line => line.reverse());
+  }
+
+  static isFieldsEqual(first, second, toCompare = ['id']) {
+    const {
+      getFieldLength
+    } = GameUtils;
+    const {
+      xLen: xFirst,
+      yLen: yFirst
+    } = getFieldLength(first);
+    const {
+      xLen: xSecond,
+      yLen: ySecond
+    } = getFieldLength(second);
+
+    if (xFirst !== xSecond || yFirst !== ySecond) return false;
+
+    return first.every((line, y) =>
+      line.every((tile, x) => {
+        const secondTile = second[y][x];
+        if (!tile || !secondTile) return tile === secondTile;
+        return toCompare.every(key => tile[key] === secondTile[key]);
+      })
+    );
+  }
+
+  static isWinCheck(field, tileScore = winScore) {
+    return field.some(line =>
+      line.some(tile => tile ? tile.score === tileScore : false
+      )
+    );
   }
 }
 

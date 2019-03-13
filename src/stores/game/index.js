@@ -4,20 +4,45 @@ import { dirTypes } from '../../utils/GameUtils/constants';
 
 class game {
   @observable field = null;
+  @observable isFieldFull = false;
   @observable removed = null;
+  @observable isWin = false;
+
+  @action resetGame = () => {
+    this.field = null;
+    this.isFieldFull = false;
+    this.removed = null;
+    this.isWin = false;
+  }
 
   @action createField = ({ x = 4, y = 4 } = {}) => {
+    this.resetGame();
     const { getEmptyField, addTile } = GameUtils;
     const emptyField = getEmptyField({ x, y });
-    const newField = addTile({ field: emptyField, amount: 2 });
-    this.field = newField;
+    const { field } = addTile({ field: emptyField, amount: 2 });
+    this.field = field;
   }
 
   mergeTiles = ({ dir }) => () => {
-    const { mergeTilesTo } = GameUtils;
+    const {
+      mergeTilesTo,
+      addTile,
+      isFieldsEqual,
+      isWinCheck
+    } = GameUtils;
     const res = mergeTilesTo(this.field, { dir });
-    this.field = res.field;
+
+    if (isFieldsEqual(this.field, res.field)) return;
+
+    const {
+      field,
+      isFieldFull
+    } = addTile({ field: res.field, amount: 1 });
+    const isWin = isWinCheck(field);
+    this.field = field;
+    this.isFieldFull = isFieldFull;
     this.removed = res.removed;
+    this.isWin = isWin;
   }
 
   @action mergeToLeft = this.mergeTiles({ dir: dirTypes.toLeft });
