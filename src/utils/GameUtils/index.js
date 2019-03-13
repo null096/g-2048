@@ -132,7 +132,11 @@ class GameUtils {
     res = mergeAllLines(rotated);
     rotated = rotateBackFn(res.field);
     removed = rotateBackFn(res.removed);
-    return { field: rotated, removed };
+    return {
+      field: rotated,
+      removed,
+      score: res.score
+    };
   }
 
   static getFlattenTilesWithPositions({ field, removed }) {
@@ -224,7 +228,10 @@ class GameUtils {
     const fieldCopy = resetPropsOnField(field, ['isNew']);
     const { xLen, yLen } = getFieldLength(fieldCopy);
     const removed = getEmptyField({ x: xLen, y: yLen });
-    const gameData = { removed };
+    const gameData = {
+      removed,
+      score: 0
+    };
 
     fieldCopy.map((line, lineY) => mergeTileLine({
       line,
@@ -234,7 +241,7 @@ class GameUtils {
 
     return {
       field: fieldCopy,
-      removed
+      ...gameData
     };
   }
 
@@ -244,23 +251,25 @@ class GameUtils {
     gameData
   }) {
     const { getNewTile } = GameUtils;
-    const { removed } = gameData;
+    const removedLine = gameData.removed[lineY];
     let first = 0;
 
     for (let second = 1; second < line.length; second++) {
       if (line[first] && line[second]
         && line[first].score === line[second].score
       ) {
-        const newTile = getNewTile({ score: line[first].score * 2 });
+        const newTileScore = line[first].score * 2;
+        const newTile = getNewTile({ score: newTileScore });
 
-        removed[lineY][first] = new Tile({
+        removedLine[first] = new Tile({
           ...line[first],
           mergeTileId: newTile.id
         });
-        removed[lineY][second] = new Tile({
+        removedLine[second] = new Tile({
           ...line[second],
           mergeTileId: newTile.id
         });
+        gameData.score += newTileScore;
 
         line[first] = newTile;
         line[second] = undefined;
