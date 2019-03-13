@@ -6,6 +6,7 @@ class game {
   @observable field = null;
   @observable isFieldFull = false;
   @observable removed = null;
+  @observable isAlreadyWin = false;
   @observable isWin = false;
   @observable score = 0;
   @observable isMoveAvailable = true;
@@ -14,6 +15,7 @@ class game {
     this.field = null;
     this.isFieldFull = false;
     this.removed = null;
+    this.isAlreadyWin = false;
     this.isWin = false;
     this.score = 0;
     this.isMoveAvailable = true;
@@ -42,12 +44,19 @@ class game {
       isFieldFull
     } = addTile({ field: res.field, amount: 1 });
     const isMoveAvailable = isMoveAvailableCheck(field);
+
     const isWin = isWinCheck(field);
+    if (this.isAlreadyWin) {
+      this.isWin = false;
+    }
+    if (isWin && !this.isAlreadyWin) {
+      this.isWin = isWin;
+      this.isAlreadyWin = true;
+    }
 
     this.field = field;
     this.isFieldFull = isFieldFull;
     this.removed = res.removed;
-    this.isWin = isWin;
     this.score = this.score + res.score;
     this.isMoveAvailable = isMoveAvailable;
   }
