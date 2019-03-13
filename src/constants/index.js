@@ -8,4 +8,4 @@ export const DIR_TYPES = {
   toDown: 'toDown',
   toUp: 'toUp'
 };
-export const WIN_SCORE = 2048;
+export const WIN_SCORE = 16;
