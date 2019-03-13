@@ -1,56 +1,45 @@
 import pose from 'react-pose';
-import cssVars from '../styles/variables.scss';
-
-const tileSize = parseInt(cssVars.tileSize);
-const spaceBetweenTiles = parseInt(cssVars.spaceBetweenTiles);
-const getTilePos = p => (p + 1) * spaceBetweenTiles + p * tileSize;
-const getTileTransfrom = (x, y) =>
-  `translate3d(${getTilePos(x)}px, ${getTilePos(y)}px, 0)`;
-export const poses = {
-  position: 'position',
-  onNew: 'onNew'
-};
+import {
+  getTilePos,
+  TILE_POSES,
+  ON_NEW_TILE_DURATION,
+  ON_TILE_POSITION_DURATION
+} from '../constants/animation';
 
 const TilePose = pose.div({
-  [poses.position]: {
-    transform: ({ x, y }) => {
-      console.log('position', x, y);
-      return getTileTransfrom(x, y);
-    },
+  [TILE_POSES.position]: {
+    x: ({ x }) => getTilePos(x),
+    y: ({ y }) => getTilePos(y),
     scale: 1,
     transition: {
-      transform: {
-        duration: 800
-      },
+      x: { duration: ON_TILE_POSITION_DURATION },
+      y: { duration: ON_TILE_POSITION_DURATION },
       scale: { duration: 0 }
     }
   },
-  [poses.onNew]: {
-    transform: ({ x, y }) => getTileTransfrom(x, y),
-    scale: .8
-    // opacity: 1,
-    // transition: {
-    //   transform: ({ x, y }) => {
-    //     console.log('onnew', x, y);
-    //     return ({
-    //       type: 'keyframes',
-    //       times: [0, .5, 1],
-    //       values: [
-    //         `scale(.8) ${getTileTransfrom(x, y)}`,
-    //         `scale(1.2) ${getTileTransfrom(x, y)}`,
-    //         getTileTransfrom(x, y, 0)
-    //       ],
-    //       duration: 1000
-    //     })
-    //   },
-    //   opacity: () => ({
-    //     type: 'keyframes',
-    //     times: [.1],
-    //     values: [1],
-    //     duration: 1000,
-    //   }),
-    // }
+  [TILE_POSES.onNew]: {
+    x: ({ x }) => getTilePos(x),
+    y: ({ y }) => getTilePos(y),
+    scale: .8,
+    opacity: 0,
+    transition: {
+      x: { duration: 0 },
+      y: { duration: 0 },
+      scale: () => ({
+        type: 'keyframes',
+        times: [0, .5, 1],
+        values: [.8, 1.1, 1],
+        duration: ON_NEW_TILE_DURATION,
+      }),
+      opacity: () => ({
+        type: 'keyframes',
+        times: [0, .3],
+        values: [0, 1],
+        duration: ON_NEW_TILE_DURATION,
+      })
+    },
   },
+  [TILE_POSES.initialPose]: {},
 });
 
 export default TilePose;
