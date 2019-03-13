@@ -59,7 +59,8 @@ class App extends Component {
       removed,
       isFieldFull,
       isWin,
-      score
+      score,
+      isMoveAvailable
     } = this.props.game;
 
     if (!field) return null;
@@ -75,6 +76,7 @@ class App extends Component {
           y={FIELD_SIZE_Y}
         />
         <span>Score: {score}</span>
+        {!isMoveAvailable&& <span>Move isn't available</span>}
         {isFieldFull && <span>Game over!</span>}
         {isWin && <span>Win</span>}
       </div>

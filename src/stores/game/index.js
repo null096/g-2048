@@ -8,6 +8,7 @@ class game {
   @observable removed = null;
   @observable isWin = false;
   @observable score = 0;
+  @observable isMoveAvailable = true;
 
   @action resetGame = () => {
     this.field = null;
@@ -15,6 +16,7 @@ class game {
     this.removed = null;
     this.isWin = false;
     this.score = 0;
+    this.isMoveAvailable = true;
   }
 
   @action createField = ({ x = 4, y = 4 } = {}) => {
@@ -30,7 +32,8 @@ class game {
       mergeTilesTo,
       addTile,
       isFieldsEqual,
-      isWinCheck
+      isWinCheck,
+      isMoveAvailableCheck
     } = GameUtils;
     const res = mergeTilesTo(this.field, { dir });
     if (isFieldsEqual(this.field, res.field)) return;
@@ -38,6 +41,7 @@ class game {
       field,
       isFieldFull
     } = addTile({ field: res.field, amount: 1 });
+    const isMoveAvailable = isMoveAvailableCheck(field);
     const isWin = isWinCheck(field);
 
     this.field = field;
@@ -45,6 +49,7 @@ class game {
     this.removed = res.removed;
     this.isWin = isWin;
     this.score = this.score + res.score;
+    this.isMoveAvailable = isMoveAvailable;
   }
 
   @action mergeToLeft = this.mergeTiles({ dir: DIR_TYPES.toLeft });

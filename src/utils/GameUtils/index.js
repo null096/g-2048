@@ -1,3 +1,4 @@
+import Tools from '../Tools';
 import Tile from './Tile';
 import arraySort from 'array-sort';
 import { DIR_TYPES, WIN_SCORE } from '../../constants/index';
@@ -353,6 +354,40 @@ class GameUtils {
       line.some(tile => tile ? tile.score >= tileScore : false
       )
     );
+  }
+
+  static isAnyTileEmpty(field) {
+    return field.some(line => line.some(tile => !tile));
+  }
+
+  static isFieldHasMergeableTiles(field) {
+    const { getObjectProp: getProp } = Tools;
+
+    return field.some((line, y) =>
+      line.some((tile, x) => {
+        if (!tile) return false;
+        const tilesAround = [
+          getProp(field, y - 1, x),
+          getProp(field, y + 1, x),
+          getProp(field, y, x - 1),
+          getProp(field, y, x + 1)
+        ]
+          .filter(Boolean)
+          .map(x => x.score);
+
+        return tilesAround.includes(tile.score);
+      })
+    );
+  }
+
+  static isMoveAvailableCheck(field) {
+    const {
+      isAnyTileEmpty,
+      isFieldHasMergeableTiles
+    } = GameUtils;
+    if (isAnyTileEmpty(field)) return true;
+
+    return isFieldHasMergeableTiles(field);
   }
 }
 
