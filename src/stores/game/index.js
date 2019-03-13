@@ -1,4 +1,4 @@
-import { observable, action } from 'mobx';
+import { observable, action, observe } from 'mobx';
 import GameUtils from '../../utils/GameUtils';
 import { DIR_TYPES } from '../../constants';
 
@@ -59,6 +59,10 @@ class game {
     this.removed = res.removed;
     this.score = this.score + res.score;
     this.isMoveAvailable = isMoveAvailable;
+  }
+
+  subscribeOnWinChange = (listener) => {
+    return observe(this, 'isWin', listener);
   }
 
   @action mergeToLeft = this.mergeTiles({ dir: DIR_TYPES.toLeft });
