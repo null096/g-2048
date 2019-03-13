@@ -350,7 +350,7 @@ class GameUtils {
 
   static isWinCheck(field, tileScore = winScore) {
     return field.some(line =>
-      line.some(tile => tile ? tile.score === tileScore : false
+      line.some(tile => tile ? tile.score >= tileScore : false
       )
     );
   }
