@@ -1,6 +1,6 @@
 import GameUtils from '../index';
 import Tile from '../Tile';
-import { dirTypes } from '../constants';
+import { DIR_TYPES } from '../constants';
 
 describe('Game Utils', () => {
   const createLine = (scores) =>
@@ -218,19 +218,19 @@ describe('Game Utils', () => {
 
   describe('Field merge works correctly', () => {
     const mergeTilesToLeft = (e, to) => {
-      const exp = mergeTilesTo(e, { dir: dirTypes.toLeft });
+      const exp = mergeTilesTo(e, { dir: DIR_TYPES.toLeft });
       expect(exp).toEqual(to);
     };
     const mergeTilesToUp = (e, to) => {
-      const exp = mergeTilesTo(e, { dir: dirTypes.toUp });
+      const exp = mergeTilesTo(e, { dir: DIR_TYPES.toUp });
       expect(exp).toEqual(to);
     };
     const mergeTilesToRight = (e, to) => {
-      const exp = mergeTilesTo(e, { dir: dirTypes.toRight });
+      const exp = mergeTilesTo(e, { dir: DIR_TYPES.toRight });
       expect(exp).toEqual(to);
     };
     const mergeTilesToDown = (e, to) => {
-      const exp = mergeTilesTo(e, { dir: dirTypes.toDown });
+      const exp = mergeTilesTo(e, { dir: DIR_TYPES.toDown });
       expect(exp).toEqual(to);
     };
     const c = createLine;

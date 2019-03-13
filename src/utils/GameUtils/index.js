@@ -1,6 +1,6 @@
 import Tile from './Tile';
 import arraySort from 'array-sort';
-import { dirTypes, winScore } from './constants';
+import { DIR_TYPES, WIN_SCORE } from '../../constants/index';
 
 class GameUtils {
   static getEmptyField({ x, y }) {
@@ -90,24 +90,24 @@ class GameUtils {
     } = GameUtils;
 
     switch (dir) {
-      case dirTypes.toLeft:
+      case DIR_TYPES.toLeft:
         return applyMerge({ field });
 
-      case dirTypes.toRight:
+      case DIR_TYPES.toRight:
         return applyMerge({
           field,
           rotateFn: reverseFieldLines,
           rotateBackFn: reverseFieldLines
         });
 
-      case dirTypes.toUp:
+      case DIR_TYPES.toUp:
         return applyMerge({
           field,
           rotateFn: rotateFieldToLeft,
           rotateBackFn: rotateFieldToRight
         });
 
-      case dirTypes.toDown:
+      case DIR_TYPES.toDown:
         return applyMerge({
           field,
           rotateFn: rotateFieldToRight,
@@ -296,14 +296,14 @@ class GameUtils {
     });
 
     switch (to) {
-      case dirTypes.right:
+      case DIR_TYPES.right:
         field.forEach((line, y) => {
           line.forEach((tile, x) => {
             newField[x][yLen - y - 1] = GameUtils.getTileCopy(tile);
           });
         });
         break;
-      case dirTypes.left:
+      case DIR_TYPES.left:
         field.forEach((line, y) => {
           line.forEach((tile, x) => {
             newField[xLen - x - 1][y] = GameUtils.getTileCopy(tile);
@@ -315,9 +315,9 @@ class GameUtils {
     return newField;
   }
 
-  static rotateFieldToRight = GameUtils.rotateRL({ to: dirTypes.right });
+  static rotateFieldToRight = GameUtils.rotateRL({ to: DIR_TYPES.right });
 
-  static rotateFieldToLeft = GameUtils.rotateRL({ to: dirTypes.left });
+  static rotateFieldToLeft = GameUtils.rotateRL({ to: DIR_TYPES.left });
 
   static reverseFieldLines = (field) => {
     const newField = GameUtils.getFieldCopy(field);
@@ -348,7 +348,7 @@ class GameUtils {
     );
   }
 
-  static isWinCheck(field, tileScore = winScore) {
+  static isWinCheck(field, tileScore = WIN_SCORE) {
     return field.some(line =>
       line.some(tile => tile ? tile.score >= tileScore : false
       )

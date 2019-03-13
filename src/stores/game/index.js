@@ -1,6 +1,6 @@
 import { observable, action } from 'mobx';
 import GameUtils from '../../utils/GameUtils';
-import { dirTypes } from '../../utils/GameUtils/constants';
+import { DIR_TYPES } from '../../constants';
 
 class game {
   @observable field = null;
@@ -47,10 +47,10 @@ class game {
     this.score = this.score + res.score;
   }
 
-  @action mergeToLeft = this.mergeTiles({ dir: dirTypes.toLeft });
-  @action mergeToRight = this.mergeTiles({ dir: dirTypes.toRight });
-  @action mergeToUp = this.mergeTiles({ dir: dirTypes.toUp });
-  @action mergeToDown = this.mergeTiles({ dir: dirTypes.toDown });
+  @action mergeToLeft = this.mergeTiles({ dir: DIR_TYPES.toLeft });
+  @action mergeToRight = this.mergeTiles({ dir: DIR_TYPES.toRight });
+  @action mergeToUp = this.mergeTiles({ dir: DIR_TYPES.toUp });
+  @action mergeToDown = this.mergeTiles({ dir: DIR_TYPES.toDown });
 }
 
 export default game;
