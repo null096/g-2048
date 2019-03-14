@@ -3,36 +3,61 @@ import { inject, observer } from 'mobx-react';
 import GameFieldBackground from './GameFieldBackground';
 import GameField from './GameField';
 import PopOver from './PopOver';
+import GameInterface from './GameInterface';
 import { FIELD_SIZE_X, FIELD_SIZE_Y } from '../constants';
 
 @inject('game')
 @observer
 class App extends Component {
   state = {
-    isWinMessageShown: false
+    isWinMessageShown: false,
+    isMoveAvailableMessageShown: false,
   };
 
   componentDidMount() {
     const {
-      createField,
-      subscribeOnWinChange
+      subscribeOnWin,
+      subscribeOnIsMoveAvailable
     } = this.props.game;
+
+    this.createNewField();
+    this.onWinChangeDisposer = subscribeOnWin(this.onIsWinChange);
+    this.onIsMoveAvailableDisposer = subscribeOnIsMoveAvailable(
+      this.onIsMoveAvailable
+    );
+    document.addEventListener('keydown', this.onKeyPress, false);
+  }
+
+  componentWillUnmount() {
+    document.removeEventListener('keydown', this.onKeyPress, false);
+    this.onWinChangeDisposer();
+    this.onIsMoveAvailableDisposer();
+  }
+
+  createNewField = () => {
+    const { createField } = this.props.game;
 
     createField({
       x: FIELD_SIZE_X,
       y: FIELD_SIZE_Y
     });
-    this.onWinChangeDisposer = subscribeOnWinChange(this.onIsWinChange);
-    document.addEventListener('keydown', this.onKeyPress, false);
-  }
-
-  componentWillUnmount() {
-    this.onWinChangeDisposer();
-    document.removeEventListener('keydown', this.onKeyPress, false);
   }
 
   onIsWinChange = ({ newValue }) => {
     if (newValue) this.setState({ isWinMessageShown: true });
+  }
+
+  onIsMoveAvailable = ({ newValue }) => {
+    if (!newValue) this.setState({ isMoveAvailableMessageShown: true });
+  }
+
+  onWinMessageClose = () => {
+    this.setState({ isWinMessageShown: false });
+  }
+
+  onMoveAvailableMessageClose = () => {
+    this.setState({ isMoveAvailableMessageShown: false });
+    this.createNewField();
   }
 
   onKeyPress = (ev) => {
@@ -43,6 +68,12 @@ class App extends Component {
       mergeToDown
     } = this.props.game;
     const { keyCode } = ev;
+    const {
+      isWinMessageShown,
+      isMoveAvailableMessageShown
+    } = this.state;
+
+    if (isWinMessageShown || isMoveAvailableMessageShown) return;
 
     switch (true) {
       // "A", left arrow
@@ -69,21 +100,20 @@ class App extends Component {
     const {
       field,
       removed,
-      isFieldFull,
-      score,
-      isMoveAvailable
+      score
     } = this.props.game;
     const {
-      isWinMessageShown
+      isWinMessageShown,
+      isMoveAvailableMessageShown
     } = this.state;
 
     if (!field) return null;
 
     return (
       <div className="game-container">
-        <div className="game-interface">
-
-        </div>
+        <GameInterface
+          score={score}
+        />
         <div className="game">
           <GameField
             field={field}
@@ -93,15 +123,18 @@ class App extends Component {
             x={FIELD_SIZE_X}
             y={FIELD_SIZE_Y}
           />
-          {/* <span>Score: {score}</span> */}
           {isWinMessageShown &&
             <PopOver
-              title="You've done it!"
-              description="description test"
+              title="You Won!"
+              onClose={this.onWinMessageClose}
             />
           }
-          {/* {!isMoveAvailable && <span>Move isn't available</span>}
-          {isFieldFull && <span>Game over!</span>} */}
+          {isMoveAvailableMessageShown &&
+            <PopOver
+              title={'Game over'}
+              onClose={this.onMoveAvailableMessageClose}
+            />
+          }
         </div>
       </div>
     );

@@ -4,13 +4,35 @@ body {
   margin: 0;
   background-color: #FAF8EF;
   font-family: 'Open Sans', sans-serif;
+  display: flex;
+  justify-content: center;
 }
 
 .game-container {
   display: flex;
   justify-content: center;
-  flex-direction: row;
+  flex-direction: column;
   flex-wrap: wrap;
+}
+
+.game-interface {
+  display: flex;
+  justify-content: flex-end;
+  margin: 10px 0;
+}
+
+.game-score {
+  border-radius: 10px;
+  min-width: 100px;
+  font-size: 18px;
+  padding: 10px 20px;
+  background-color: rgb(187, 95, 14);
+  color: rgb(255, 255, 255);
+
+  .score {
+    margin-left: 4px;
+    display: inline-block;
+  }
 }
 
 .pop-over {
@@ -20,13 +42,18 @@ body {
   width: 100%;
   height: 100%;
   display: flex;
-  flex-direction: column;
   justify-content: center;
   align-items: center;
-  background-color: rgba(226, 175, 44, 0.7);
+  background-color: rgba(226, 175, 44, .7);
   z-index: 99;
-  padding: 40px;
+  border-radius: $game-border-radious;
 
+  .pop-over-inner {
+    padding: 40px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
   .title {
     font-size: 42px;
     mix-blend-mode: soft-light;
@@ -39,9 +66,10 @@ body {
     position: absolute;
     top: 5px;
     right: 5px;
-    width: 24px;
-    height: 24px;
+    width: 16px;
+    height: 16px;
     opacity: .7;
+    transition: opacity .5s;
     cursor: pointer;
     mix-blend-mode: difference;
   }
@@ -74,8 +102,9 @@ body {
   }
   .tile {
     position: absolute;
-    color: #776E65;
-    font-size: 52px;
+    color: rgba(255, 255, 255, 0.9);
+    background-color: #3E3933;
+    font-size: 32px;
     font-weight: bold;
     display: flex;
     justify-content: center;
@@ -94,33 +123,45 @@ body {
   .field,
   .empty-tile,
   .tile {
-    border-radius: 3px;
+    border-radius: $game-border-radious;
   }
   .tile-2 {
+    font-size: 52px;
+    color: #776E65;
     background-color:#EEE4DA;
   }
   .tile-4 {
+    font-size: 52px;
+    color: #776E65;
     background-color: #EDE0C8;
   }
   .tile-8 {
+    font-size: 52px;
+    color: #776E65;
     background-color: #F2B179;
   }
   .tile-16 {
+    font-size: 52px;
     background-color: #F59563;
   }
   .tile-32 {
+    font-size: 52px;
     background-color: #F67C5F;
   }
   .tile-64 {
+    font-size: 52px;
     background-color: #F65E3B;
   }
   .tile-128 {
+    font-size: 36px;
     background-color: #EDCF72;
   }
   .tile-256 {
+    font-size: 36px;
     background-color: #EDCC61;
   }
   .tile-512 {
+    font-size: 36px;
     background-color: #EDC850;
   }
   .tile-1024 {
@@ -128,8 +169,5 @@ body {
   }
   .tile-2048 {
     background-color: #EDC22E;
-  }
-  .tile-4096 {
-    background-color: #3E3933;
   }
 }

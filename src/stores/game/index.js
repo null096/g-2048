@@ -61,9 +61,12 @@ class game {
     this.isMoveAvailable = isMoveAvailable;
   }
 
-  subscribeOnWinChange = (listener) => {
-    return observe(this, 'isWin', listener);
+  subscribeOnChange = (name) => (listener) => {
+    return observe(this, name, listener);
   }
+
+  subscribeOnWin = this.subscribeOnChange('isWin');
+  subscribeOnIsMoveAvailable = this.subscribeOnChange('isMoveAvailable');
 
   @action mergeToLeft = this.mergeTiles({ dir: DIR_TYPES.toLeft });
   @action mergeToRight = this.mergeTiles({ dir: DIR_TYPES.toRight });

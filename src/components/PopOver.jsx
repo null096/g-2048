@@ -1,11 +1,14 @@
 import React from 'react';
 
-const PopOver = ({ title, description, Content }) => {
+const PopOver = ({ title, onClose }) => {
   return (
     <div className="pop-over">
-      <div className="close-btn"><img src="/img/cross.svg" alt="X" /></div>
-      {!!title && <div className="title">{title}</div>}
-      {!!description && <div className="description">{description}</div>}
+      <div className="pop-over-inner">
+        <div className="close-btn" onClick={onClose}>
+          <img src="/img/cross.svg" alt="X" />
+        </div>
+        {!!title && <div className="title">{title}</div>}
+      </div>
     </div>
   );
 };
